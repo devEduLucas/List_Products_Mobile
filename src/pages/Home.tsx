@@ -27,6 +27,10 @@ export default function Home() {
   const totalCount = products.length;
   const completedCount = products.filter((t) => t.completed).length;
   const pendingCount = totalCount - completedCount;
+  const productExists = products.some(
+    (product) =>
+      product.title.toLowerCase() === newTitle.trim().toLowerCase()
+  );
 
   useEffect(() => {
     fetchProducts();
@@ -44,6 +48,18 @@ export default function Home() {
     }
   };
 
+  const handleDeleteProductsWeb = async (id: string) => {
+    const confirmed = window.confirm(
+      'Tem certeza de que deseja excluir esta tarefa?'
+    );
+
+    if (confirmed) {
+      const updatedList = products.filter((product) => product.id !== id);
+      setProducts(updatedList);
+      await saveProducts(updatedList);
+    }
+  };
+
   const generateId = (products: Products[]) => {
     const nextId =
       products.length === 0
@@ -53,15 +69,20 @@ export default function Home() {
     return String(nextId).padStart(3, "0");
   };
 
-  const handleAddTask = async () => {
-    if (!newTitle.trim()) {
+  const handleAddProduct = async () => {
+    if (!newTitle.trim() || Number(newTitle)) {
       Alert.alert("Atenção", "Digite o nome do produto.");
       return;
     }
 
-    if (quantity === "" || Number(quantity) <= 0) {
+    if (Number(quantity) <= 0) {
       Alert.alert("Atenção", "Digite uma quantidade válida.");
       return;
+    }
+
+     if (productExists) {
+    Alert.alert("Atenção", "Este produto já está na lista.");
+    return;
     }
 
     const newProduct: Products = {
@@ -124,7 +145,7 @@ export default function Home() {
     await saveProducts(updatedList);
   };
 
-  const handleDeleteTask = (id: string) => {
+  const handleDeleteProduct = (id: string) => {
     Alert.alert(
       "Remover Produto",
       "Tem certeza de que deseja excluir este produto?",
@@ -214,7 +235,7 @@ export default function Home() {
 
         <TouchableOpacity
           style={styles.addButton}
-          onPress={handleAddTask}
+          onPress={handleAddProduct}
           activeOpacity={0.8}
         >
           <Text style={styles.textAddButton}>+ Adicionar</Text>
@@ -308,7 +329,7 @@ export default function Home() {
                 <TouchableOpacity
                   style={[styles.actionButton, styles.deleteButton]}
                   activeOpacity={0.7}
-                  onPress={() => handleDeleteTask(item.id)}
+                  onPress={() => handleDeleteProductsWeb(item.id)}
                 >
                   <Text style={styles.deleteButtonText}>Excluir</Text>
                 </TouchableOpacity>

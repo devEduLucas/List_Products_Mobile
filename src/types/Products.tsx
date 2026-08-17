@@ -1,7 +1,7 @@
 export interface Products{
     id: string;
     title: string;
-    quantidade: string;
+    quantidade: number;
     completed: boolean;
     createdAt: string;
 }

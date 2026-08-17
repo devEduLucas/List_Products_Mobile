@@ -6,7 +6,7 @@ import { saveProducts, loadProducts } from "../services/Storage";
 export default function Home() {
     const [products, setProducts] = useState<Products[]>([]);
     const [newTitle, setNewTitle] = useState<string>("")
-    const [quantity, setQuantity] = useState<string>("0")
+    const [quantity, setQuantity] = useState<number | string>("")
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [filter, setFilter] = useState<FilterType>('pendentes')
 
